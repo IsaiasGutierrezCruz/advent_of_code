@@ -1,15 +1,13 @@
 #[aoc_generator(day2)]
-pub fn input_generator(input: &str) -> Vec<Vec<usize>>  {
+pub fn input_generator(input: &str) -> Vec<Vec<usize>> {
     let mut base_vec = vec![];
 
     input.lines().for_each(|line| {
         let values = line.split_whitespace();
         base_vec.push(values.map(|x| x.parse::<usize>().unwrap()).collect());
-
     });
     base_vec
 }
-
 
 // Problem. Part 1.
 // The unusual data (your puzzle input) consists of many reports, one report per line. Each report is a list of numbers called levels that are separated by spaces. For example:
@@ -104,7 +102,7 @@ fn unsafe_indexes(report: &Vec<usize>) -> Vec<usize> {
                 bad_level_indexes.push(index);
                 bad_level_indexes.push(index - 1);
                 index += 1;
-            },
+            }
         }
     }
     bad_level_indexes
