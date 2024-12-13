@@ -38,31 +38,25 @@ pub fn input_generator(input: &str) -> Vec<Vec<usize>> {
 
 #[aoc(day2, part1)]
 pub fn solve_part_01(input: &Vec<Vec<usize>>) -> usize {
-    let reports = input.clone();
-    let mut safe_reports = 0;
-
-    for report in reports {
-        let mut is_safe = true;
-        let mut index = 1;
-        let is_decreasing: bool = report[0] > report[1];
-        while is_safe && index < report.len() {
-            let diff = if is_decreasing {
-                report[index - 1].checked_sub(report[index])
-            } else {
-                report[index].checked_sub(report[index - 1])
-            };
-
-            match diff {
-                Some(d) if d >= 1 && d <= 3 => index += 1,
-                _ => is_safe = false,
+    input
+        .iter()
+        .filter(|report| {
+            if report.len() < 2 {
+                return false;
             }
-        }
-        if is_safe {
-            safe_reports += 1;
-        }
-    }
 
-    safe_reports
+            let is_decreasing = report[0] > report[1];
+            report.windows(2).all(|pair| {
+                let diff = if is_decreasing {
+                    pair[0].checked_sub(pair[1])
+                } else {
+                    pair[1].checked_sub(pair[0])
+                };
+
+                matches!(diff, Some(d) if d >= 1 && d <= 3)
+            })
+        })
+        .count()
 }
 
 // --- Part Two ---
