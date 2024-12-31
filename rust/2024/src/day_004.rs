@@ -113,11 +113,15 @@ pub fn solve_part_01(input: &Vec<Vec<char>>) -> usize {
     let x_size = input.len() as i32;
     let y_size = input[0].len() as i32;
 
-    for row_index in 0..input.len() {
-        for col_index in 0..input[row_index].len() {
+    for (i, row) in input.iter().enumerate() {
+        for (j, &current) in row.iter().enumerate() {
+            // exit early if the current character is not an X
+            if current != 'X' {
+                continue;
+            }
             let point = Point {
-                x: row_index as i32,
-                y: col_index as i32,
+                x: i as i32,
+                y: j as i32,
             };
             for direction in DIRECTIONS.iter() {
                 // review if it is possible that the pattern exists in this direction
@@ -127,22 +131,20 @@ pub fn solve_part_01(input: &Vec<Vec<char>>) -> usize {
                     point,
                     direction,
                     PATTERN_TO_SEARCH,
-                ) || input[point.x as usize][point.y as usize] != PATTERN_TO_SEARCH[0]
+                ) 
                 {
                     // the pattern is not possible in this direction
                     continue;
                 }
-                // check if the pattern exists in this direction
-                let is_second_char = input[(point.x + direction.x * 1) as usize]
-                    [(point.y + direction.y * 1) as usize];
-                let is_third_char = input[(point.x + direction.x * 2) as usize]
-                    [(point.y + direction.y * 2) as usize];
-                let is_fourth_char = input[(point.x + direction.x * 3) as usize]
-                    [(point.y + direction.y * 3) as usize];
 
-                if is_second_char == PATTERN_TO_SEARCH[1]
-                    && is_third_char == PATTERN_TO_SEARCH[2]
-                    && is_fourth_char == PATTERN_TO_SEARCH[3]
+                // use iterators to check if the pattern exists in this direction
+                let pattern_matches = (1..PATTERN_TO_SEARCH.len()).all(|step|{
+                    let new_x = (point.x + direction.x * step as i32) as usize;
+                    let new_y = (point.y + direction.y * step as i32) as usize;
+                    input[new_x][new_y] == PATTERN_TO_SEARCH[step as usize]
+                });
+
+                if pattern_matches
                 {
                     total_matches += 1;
                 }
